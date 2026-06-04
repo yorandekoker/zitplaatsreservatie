@@ -1,55 +1,98 @@
 <%- include('partials/header', { title, currentPath }) %>
 <section class="panel">
   <h1>Reserveer uw zitplek</h1>
-  <p><strong><%= movie.titel %></strong> · <%= new Date(movie.start_tijd).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) %> <%= movie.zaal_naam %></p>
+  <p><strong><%= movie.titel %></strong> · <%= new Date(movie.start_tijd).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) %> · <%= movie.zaal_naam %></p>
 
-  <form method="post" action="/seats">
+  <!-- Scherm indicator -->
+  <div class="screen">SCHERM</div>
+
+  <form method="post" action="/seats" id="seatForm">
     <div class="seat-map">
+      <% 
+        const totaalStoelenZaal = movie.rijen * movie.stoelen_per_rij;
+        const moetSplitsen = totaalStoelenZaal >= 200;
+      %>
       <% rows.forEach((row) => { %>
         <div class="seat-row">
-          <span class="row-label"><%= row.row %></span>
+          <span class="row-label">Rij <%= row.row %></span>
           <div class="seats">
-            <% row.seats.forEach((seat) => { %>
-              <% if (seat.status === 'aisle') { %>
-                <span class="aisle"></span>
-              <% } else { %>
-                <label class="seat <%= seat.status === 'taken' ? 'taken' : '' %>">
-                  <input
-                    type="checkbox"
-                    name="seats"
-                    value="<%= seat.id %>"
-                    <%= selectedIds.has(seat.id) ? 'checked' : '' %>
-                    <%= seat.status === 'taken' ? 'disabled' : '' %>
-                  />
-                  <span><%= seat.number %></span>
-                </label>
+            <% row.seats.forEach((seat, index) => { %>
+              <% if (moetSplitsen && index === Math.floor(row.seats.length / 2)) { %>
+                <span class="aisle-gap"></span>
               <% } %>
+              <label class="seat <%= seat.status === 'taken' ? 'taken' : '' %>">
+                <input
+                  type="checkbox"
+                  name="seats"
+                  value="<%= seat.id %>"
+                  data-price="<%= seat.price %>"
+                  <%= selectedIds.has(seat.id) ? 'checked' : '' %>
+                  <%= seat.status === 'taken' ? 'disabled' : '' %>
+                />
+                <span><%= seat.number %></span>
+              </label>
             <% }) %>
           </div>
         </div>
       <% }) %>
     </div>
 
+    <!-- Legenda -->
+    <div class="legend">
+      <span><i class="dot available"></i> Beschikbaar</span>
+      <span><i class="dot selected"></i> Geselecteerd</span>
+      <span><i class="dot taken"></i> Bezet</span>
+    </div>
+
     <div class="summary">
-      <h2>Geselecteerde stoelen</h2>
-      <% if (selectedSeats.length === 0) { %>
-        <p class="muted">Nog geen stoelen geselecteerd.</p>
-      <% } %>
-      <% if (selectedSeats.length > 0) { %>
-        <ul>
-          <% selectedSeats.forEach((entry) => { %>
-            <li><%= entry.row %>, stoel <%= entry.seat.number %> - €<%= Number(entry.seat.price).toFixed(2) %></li>
-          <% }) %>
-        </ul>
-      <% } %>
-      <p class="total">Totaal: €<%= Number(total).toFixed(2) %></p>
-  
+      <h2>Uw selectie</h2>
+      <ul id="selectedList">
+        <li class="muted">Nog geen stoelen geselecteerd.</li>
+      </ul>
+      <p class="total">Totaal: €<span id="totalPrice">0.00</span></p>
+
       <div class="actions">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-        <button class="btn alt" type="submit">Selectie opslaan</button>
-        <button class="btn" type="submit" name="action" value="confirm" <%= selectedSeats.length === 0 ? 'disabled' : '' %>>Verder naar bevestigen</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <a class="btn alt" href="/movies">Terug</a>
+        <button class="btn" type="submit" name="action" value="confirm" id="confirmBtn" disabled>Verder naar bevestigen</button>
       </div>
     </div>
   </form>
 </section>
+
+<script>
+  const checkboxes = document.querySelectorAll('.seat input[type="checkbox"]');
+  const selectedList = document.getElementById('selectedList');
+  const totalPrice = document.getElementById('totalPrice');
+  const confirmBtn = document.getElementById('confirmBtn');
+
+  function updateSelection() {
+    const selected = Array.from(checkboxes).filter(cb => cb.checked);
+    let total = 0;
+
+    if (selected.length === 0) {
+      selectedList.innerHTML = '<li class="muted">Nog geen stoelen geselecteerd.</li>';
+      confirmBtn.disabled = true;
+    } else {
+      selectedList.innerHTML = '';
+      selected.forEach(cb => {
+        const parts = cb.value.split('-');
+        const rij = parts[1];
+        const stoel = parts[2];
+        const price = parseFloat(cb.dataset.price);
+        total += price;
+        const li = document.createElement('li');
+        li.textContent = `Rij ${rij}, stoel ${stoel} — €${price.toFixed(2)}`;
+        selectedList.appendChild(li);
+      });
+      confirmBtn.disabled = false;
+    }
+
+    totalPrice.textContent = total.toFixed(2);
+  }
+
+  checkboxes.forEach(cb => cb.addEventListener('change', updateSelection));
+  updateSelection();
+</script>
+
 <%- include('partials/footer') %>

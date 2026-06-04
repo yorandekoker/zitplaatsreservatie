@@ -21,12 +21,11 @@
 
    <% movies.forEach((movie) => { %>
   <article class="movie-card">
-     <% if (movie.poster_url) { %>
-    <img src="<%= movie.poster_url %>" alt="<%= movie.titel %>" class="movie-poster" />
-  <% } else { %>
-    <div class="movie-poster-placeholder"></div>
-  <% } %>
-  <div class="movie-card-content">
+    <% if (movie.poster_url) { %>
+      <img src="<%= movie.poster_url %>" alt="<%= movie.titel %>" class="movie-poster" />
+    <% } else { %>
+      <div class="movie-poster-placeholder"></div>
+    <% } %>
     <div class="movie-card-content">
       <span class="badge"><%= movie.genre %></span>
       <h2><%= movie.titel %></h2>
