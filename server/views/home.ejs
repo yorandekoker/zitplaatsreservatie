@@ -1,8 +1,28 @@
 <%- include('partials/header', { title, currentPath }) %>
 <section class="hero" onclick="window.location.href='/movies'">
-  <p class="eyebrow">Welkom bij</p>
-  <h1>De Cinegraaf</h1>
-  <p>Raak het scherm aan om te beginnen</p>
-  <a class="btn" href="/movies">Start reservatie</a>
+  <div class="hero-content">
+    <p class="eyebrow">🎬 Welkom bij</p>
+    <h1>De Cinegraaf</h1>
+    <p class="hero-tagline">Beleef film zoals het bedoeld is. Reserveer je perfecte plek in een paar klikken.</p>
+    <a class="btn hero-btn" href="/movies" onclick="event.stopPropagation()">Start reservatie →</a>
+  </div>
+
+  <div class="hero-features">
+    <div class="hero-feature">
+      <span class="hero-feature-icon">🎟️</span>
+      <h3>Kies je film</h3>
+      <p>Blader door ons actuele aanbod</p>
+    </div>
+    <div class="hero-feature">
+      <span class="hero-feature-icon">💺</span>
+      <h3>Selecteer je stoel</h3>
+      <p>Kies je favoriete plek in de zaal</p>
+    </div>
+    <div class="hero-feature">
+      <span class="hero-feature-icon">📱</span>
+      <h3>Ontvang je ticket</h3>
+      <p>Met QR-code, klaar om te scannen</p>
+    </div>
+  </div>
 </section>
 <%- include('partials/footer') %>
