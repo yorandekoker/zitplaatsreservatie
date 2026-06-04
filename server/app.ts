@@ -8,12 +8,16 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import crypto from "crypto";
 import routes from "./routes";
+import connectPgSimple from "connect-pg-simple";
 
+const PgSession = connectPgSimple(session);
 const app: Application = express();
+app.set("trust proxy", 1);
 const PORT: number = 3000;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
 
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
@@ -26,10 +30,20 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(cookieParser());
 
 app.use(session({
+  store: new PgSession({
+    conString: process.env.DATABASE_URL,
+    tableName: "sessies",
+    createTableIfMissing: true,
+  }),
   secret: process.env.SESSION_SECRET || "cinegraaf-dev-secret",
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 24 * 60 * 60 * 1000 // 24 uur
+  }
 }));
+
 
 // Eigen CSRF implementatie
 // CSRF - sla /api routes over
