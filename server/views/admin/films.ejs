@@ -1,0 +1,37 @@
+<%- include('../partials/header', { title: 'Films beheren', currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1>Films beheren</h1>
+    <a href="/admin/films/nieuw" class="btn btn-primary">+ Nieuwe film</a>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Titel</th>
+        <th>Genre</th>
+        <th>Duur</th>
+        <th>Acties</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% films.forEach(film => { %>
+      <tr>
+        <td><%= film.titel %></td>
+        <td><%= film.genre %></td>
+        <td><%= film.duur_minuten %> min</td>
+        <td>
+          <a href="/admin/films/<%= film.id %>/bewerken" class="btn btn-small">Bewerken</a>
+          <form method="POST" action="/admin/films/<%= film.id %>/verwijderen" style="display:inline">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Zeker verwijderen?')">Verwijderen</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../partials/footer') %>

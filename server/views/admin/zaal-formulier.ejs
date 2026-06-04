@@ -1,0 +1,24 @@
+<%- include('../partials/header', { title, currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1><%= zaal ? 'Zaal bewerken' : 'Nieuwe zaal' %></h1>
+    <a href="/admin/zalen" class="btn btn-small">← Terug</a>
+  </div>
+
+  <form method="POST" action="<%= actie %>" class="admin-form">
+    <label>Naam
+      <input type="text" name="naam" value="<%= zaal ? zaal.naam : '' %>" required />
+    </label>
+    <label>Aantal rijen
+      <input type="number" name="rijen" value="<%= zaal ? zaal.rijen : '' %>" required />
+    </label>
+    <label>Stoelen per rij
+      <input type="number" name="stoelen_per_rij" value="<%= zaal ? zaal.stoelen_per_rij : '' %>" required />
+    </label>
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" /> 
+    <button type="submit" class="btn btn-primary">Opslaan</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

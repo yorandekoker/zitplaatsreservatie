@@ -1,0 +1,57 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+import express, { Application, Request, Response, NextFunction } from "express";
+import path from "path";
+import session from "express-session";
+import helmet from "helmet";
+import cookieParser from "cookie-parser";
+import crypto from "crypto";
+import routes from "./routes";
+
+const app: Application = express();
+const PORT: number = 3000;
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use("/public", express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Cache-Control', 'no-store');
+  next();
+});
+app.use(cookieParser());
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || "cinegraaf-dev-secret",
+  resave: true,
+  saveUninitialized: true,
+}));
+
+// Eigen CSRF implementatie
+// CSRF - sla /api routes over
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.locals.currentPath = req.path;
+  res.locals.klant = (req.session as any).klant || null;
+
+  if ((req.session as any).csrfToken) {
+    res.locals.csrfToken = (req.session as any).csrfToken;
+    return next();
+  }
+
+  (req.session as any).csrfToken = crypto.randomBytes(32).toString("hex");
+  req.session.save((err) => {
+    if (err) console.error("Sessie opslaan mislukt:", err);
+    res.locals.csrfToken = (req.session as any).csrfToken;
+    next();
+  });
+});
+
+app.use("/", routes);
+
+app.listen(PORT, (): void => {
+  console.log(`Server draait op http://localhost:${PORT}`);
+});

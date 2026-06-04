@@ -1,0 +1,38 @@
+<%- include('../partials/header', { title: 'Vertoningen beheren', currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1>Vertoningen beheren</h1>
+    <a href="/admin/vertoningen/nieuw" class="btn btn-primary">+ Nieuwe vertoning</a>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Film</th>
+        <th>Zaal</th>
+        <th>Datum & tijd</th>
+        <th>Prijs</th>
+        <th>Acties</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% vertoningen.forEach(v => { %>
+      <tr>
+        <td><%= v.film_titel %></td>
+        <td><%= v.zaal_naam %></td>
+        <td><%= new Date(v.start_tijd).toLocaleString('nl-BE') %></td>
+        <td>€<%= Number(v.prijs).toFixed(2) %></td>
+        <td>
+          <form method="POST" action="/admin/vertoningen/<%= v.id %>/verwijderen" style="display:inline">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Zeker verwijderen?')">Verwijderen</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../partials/footer') %>

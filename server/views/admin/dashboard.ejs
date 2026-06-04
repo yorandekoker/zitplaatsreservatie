@@ -1,0 +1,76 @@
+<%- include('../partials/header', { title: 'Dashboard', currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1>Dashboard</h1>
+  </div>
+
+  <!-- Statistieken -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <p class="stat-label">Boekingen vandaag</p>
+      <p class="stat-number"><%= stats.vandaag %></p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Boekingen deze maand</p>
+      <p class="stat-number"><%= stats.deze_maand %></p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Jaaromzet</p>
+      <p class="stat-number">€<%= Number(stats.jaaromzet).toFixed(2) %></p>
+    </div>
+    <div class="stat-card">
+      <p class="stat-label">Totaal boekingen</p>
+      <p class="stat-number"><%= stats.totaal %></p>
+    </div>
+  </div>
+
+  <!-- Navigatiekaarten -->
+  <h2>Beheer</h2>
+  <div class="admin-nav-grid">
+    <a href="/admin/films" class="admin-nav-card">
+      <span class="admin-nav-icon">🎬</span>
+      <h3>Films</h3>
+      <p>Voeg films toe, bewerk of verwijder ze</p>
+    </a>
+    <a href="/admin/vertoningen" class="admin-nav-card">
+      <span class="admin-nav-icon">📅</span>
+      <h3>Vertoningen</h3>
+      <p>Plan vertoningen in zalen op datum en tijd</p>
+    </a>
+    <a href="/admin/zalen" class="admin-nav-card">
+      <span class="admin-nav-icon">🏛️</span>
+      <h3>Zalen</h3>
+      <p>Beheer zalen en stoelconfiguraties</p>
+    </a>
+    <a href="/admin/boekingen" class="admin-nav-card">
+      <span class="admin-nav-icon">🎟️</span>
+      <h3>Boekingen</h3>
+      <p>Bekijk alle boekingen en klantgegevens</p>
+    </a>
+    <a href="/admin/klanten" class="admin-nav-card">
+  <span class="admin-nav-icon">👥</span>
+  <h3>Klanten</h3>
+  <p>Bekijk alle geregistreerde klanten</p>
+</a>
+  </div>
+
+  <!-- Boekingen per maand -->
+  <h2>Boekingen per maand</h2>
+  <table class="admin-table">
+    <thead>
+      <tr><th>Maand</th><th>Aantal boekingen</th><th>Omzet</th></tr>
+    </thead>
+    <tbody>
+      <% maanden.forEach(m => { %>
+      <tr>
+        <td><%= m.maand %></td>
+        <td><%= m.aantal %></td>
+        <td>€<%= Number(m.omzet).toFixed(2) %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../partials/footer') %>

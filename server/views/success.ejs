@@ -1,0 +1,20 @@
+<%- include('partials/header', { title, currentPath }) %>
+<section class="panel centered">
+  <h1>Reservatie bevestigd</h1>
+  <p>Uw ticketcode: <strong>#<%= reservation.reservationId %></strong></p>
+
+  <article class="ticket">
+    <h2><%= reservation.movie.title %></h2>
+    <p class="muted"><%= reservation.movie.director %></p>
+    <p><%= formattedDate %> · <%= reservation.movie.time %></p>
+    <p>Stoelen: <%= reservation.seats.map((entry) => `R${entry.seat.row}S${entry.seat.number}`).join(', ') %></p>
+    <p class="total">Betaald: €<%= Number(reservation.totalPrice).toFixed(2) %></p>
+    <img src="<%= qrDataUrl %>" alt="QR ticket" class="qr" />
+  </article>
+
+  <form method="post" action="/reset">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <button class="btn" type="submit">Nieuwe reservering</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

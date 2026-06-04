@@ -1,0 +1,48 @@
+<%- include('partials/header', { title, currentPath }) %>
+<section class="panel narrow">
+  <h1>Bevestig uw reservatie</h1>
+
+  <article class="card">
+    <h2><%= movie.titel %></h2>
+    <p class="muted"><%= movie.genre %></p>
+    <p><%= formattedDate %></p>
+  </article>
+
+  <article class="card">
+    <h2>Geselecteerde stoelen</h2>
+    <ul>
+      <% selectedSeats.forEach((entry) => { %>
+        <li>Rij <%= entry.seat.row %>, stoel <%= entry.seat.number %> — €<%= Number(entry.seat.price).toFixed(2) %></li>
+      <% }) %>
+    </ul>
+    <p class="total">Totaal: €<%= Number(total).toFixed(2) %></p>
+  </article>
+
+ <article class="card">
+  <h2>Uw gegevens</h2>
+  <form method="post" action="/confirm" class="confirm-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <label>Naam
+      <input type="text" name="naam" required 
+        value="<%= klant ? klant.naam : '' %>" 
+        placeholder="Jan Peeters"
+        <%= klant ? 'readonly' : '' %> />
+    </label>
+    <label>E-mailadres
+      <input type="email" name="email" required 
+        value="<%= klant ? klant.email : '' %>" 
+        placeholder="jan@voorbeeld.be"
+        <%= klant ? 'readonly' : '' %> />
+    </label>
+    <% if (klant) { %>
+      <p class="muted" style="font-size:0.85rem;">✅ Ingelogd als <%= klant.naam %></p>
+    <% } %>
+    <div class="actions">
+      <a class="btn alt" href="/seats">Terug</a>
+      <button class="btn" type="submit">Bevestig reservering</button>
+    </div>
+  </form>
+</article>
+
+</section>
+<%- include('partials/footer') %>

@@ -1,0 +1,33 @@
+<%- include('../partials/header', { title, currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1><%= titel ? 'Film bewerken' : 'Nieuwe film' %></h1>
+    <a href="/admin/films" class="btn btn-small">← Terug</a>
+  </div>
+
+  <form method="POST" action="<%= actie %>" enctype="multipart/form-data" class="admin-form">
+    <label>Titel
+      <input type="text" name="titel" value="<%= film ? film.titel : '' %>" required />
+    </label>
+    <label>Genre
+      <input type="text" name="genre" value="<%= film ? film.genre : '' %>" />
+    </label>
+    <label>Beschrijving
+      <textarea name="beschrijving"><%= film ? film.beschrijving : '' %></textarea>
+    </label>
+    <label>Duur (minuten)
+      <input type="number" name="duur_minuten" value="<%= film ? film.duur_minuten : '' %>" />
+    </label>
+    <label>Poster (afbeelding)
+      <input type="file" name="poster" accept="image/*" />
+    </label>
+    <% if (film && film.poster_url) { %>
+      <img src="<%= film.poster_url %>" alt="Huidige poster" style="max-width:150px; margin-top:8px;" />
+    <% } %>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <button type="submit" class="btn btn-primary">Opslaan</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

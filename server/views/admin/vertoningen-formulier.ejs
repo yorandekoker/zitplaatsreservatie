@@ -1,0 +1,35 @@
+<%- include('../partials/header', { title: 'Nieuwe vertoning', currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1>Nieuwe vertoning</h1>
+    <a href="/admin/vertoningen" class="btn btn-small">← Terug</a>
+  </div>
+
+  <form method="POST" action="/admin/vertoningen/nieuw" class="admin-form">
+    <label>Film
+      <select name="film_id" required>
+        <% films.forEach(f => { %>
+          <option value="<%= f.id %>"><%= f.titel %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>Zaal
+      <select name="zaal_id" required>
+        <% zalen.forEach(z => { %>
+          <option value="<%= z.id %>"><%= z.naam %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>Datum & tijd
+      <input type="datetime-local" name="start_tijd" required />
+    </label>
+    <label>Prijs (€)
+      <input type="number" name="prijs" step="0.01" min="0" required />
+    </label>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <button type="submit" class="btn btn-primary">Opslaan</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

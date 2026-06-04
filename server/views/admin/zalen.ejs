@@ -1,0 +1,39 @@
+<%- include('../partials/header', { title: 'Zalen beheren', currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1>Zalen beheren</h1>
+    <a href="/admin/zalen/nieuw" class="btn btn-primary">+ Nieuwe zaal</a>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>Naam</th>
+        <th>Rijen</th>
+        <th>Stoelen per rij</th>
+        <th>Totaal</th>
+        <th>Acties</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% zalen.forEach(z => { %>
+      <tr>
+        <td><%= z.naam %></td>
+        <td><%= z.rijen %></td>
+        <td><%= z.stoelen_per_rij %></td>
+        <td><%= z.rijen * z.stoelen_per_rij %></td>
+        <td>
+          <a href="/admin/zalen/<%= z.id %>/bewerken" class="btn btn-small">Bewerken</a>
+          <form method="POST" action="/admin/zalen/<%= z.id %>/verwijderen" style="display:inline">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('Zeker verwijderen?')">Verwijderen</button>
+          </form>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../partials/footer') %>

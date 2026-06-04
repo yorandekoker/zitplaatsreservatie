@@ -1,0 +1,48 @@
+<%- include('partials/header', { title, currentPath }) %>
+<section class="panel">
+  <h1>Beschikbare films</h1>
+  <p>Kies uw favoriete film en reserveer uw tickets.</p>
+
+  <form class="filters" method="get" action="/movies">
+    <input type="search" name="search" placeholder="Zoek op titel of regisseur" value="<%= search %>" />
+    <select name="genre">
+      <option value="">Alle genres</option>
+      <% genres.forEach((item) => { %>
+        <option value="<%= item %>" <%= genre === item ? 'selected' : '' %>><%= item %></option>
+      <% }) %>
+    </select>
+    <button class="btn" type="submit">Filter</button>
+  </form>
+
+  <div class="movie-grid">
+    <% if (movies.length === 0) { %>
+      <p>Geen films gevonden.</p>
+    <% } %>
+
+   <% movies.forEach((movie) => { %>
+  <article class="movie-card">
+     <% if (movie.poster_url) { %>
+    <img src="<%= movie.poster_url %>" alt="<%= movie.titel %>" class="movie-poster" />
+  <% } else { %>
+    <div class="movie-poster-placeholder"></div>
+  <% } %>
+  <div class="movie-card-content">
+    <div class="movie-card-content">
+      <span class="badge"><%= movie.genre %></span>
+      <h2><%= movie.titel %></h2>
+      <p><%= movie.beschrijving %></p>
+      <div class="movie-meta">
+        <span><%= new Date(movie.start_tijd).toLocaleString('nl-BE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) %></span>
+        <span><strong>€<%= Number(movie.prijs).toFixed(2) %></strong></span>
+      </div>
+    </div>
+    <form method="post" action="/movies/select">
+      <input type="hidden" name="movieId" value="<%= movie.vertoning_id %>" />
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button class="btn" type="submit">Kies film</button>
+    </form>
+  </article>
+<% }) %>
+  </div>
+</section>
+<%- include('partials/footer') %>

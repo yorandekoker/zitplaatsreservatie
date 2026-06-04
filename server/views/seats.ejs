@@ -1,0 +1,55 @@
+<%- include('partials/header', { title, currentPath }) %>
+<section class="panel">
+  <h1>Reserveer uw zitplek</h1>
+  <p><strong><%= movie.title %></strong> · <%= movie.time %></p>
+
+  <form method="post" action="/seats">
+    <div class="seat-map">
+      <% rows.forEach((row) => { %>
+        <div class="seat-row">
+          <span class="row-label"><%= row.row %></span>
+          <div class="seats">
+            <% row.seats.forEach((seat) => { %>
+              <% if (seat.status === 'aisle') { %>
+                <span class="aisle"></span>
+              <% } else { %>
+                <label class="seat <%= seat.status === 'taken' ? 'taken' : '' %>">
+                  <input
+                    type="checkbox"
+                    name="seats"
+                    value="<%= seat.id %>"
+                    <%= selectedIds.has(seat.id) ? 'checked' : '' %>
+                    <%= seat.status === 'taken' ? 'disabled' : '' %>
+                  />
+                  <span><%= seat.number %></span>
+                </label>
+              <% } %>
+            <% }) %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+    <div class="summary">
+      <h2>Geselecteerde stoelen</h2>
+      <% if (selectedSeats.length === 0) { %>
+        <p class="muted">Nog geen stoelen geselecteerd.</p>
+      <% } %>
+      <% if (selectedSeats.length > 0) { %>
+        <ul>
+          <% selectedSeats.forEach((entry) => { %>
+            <li><%= entry.row %>, stoel <%= entry.seat.number %> - €<%= Number(entry.seat.price).toFixed(2) %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+      <p class="total">Totaal: €<%= Number(total).toFixed(2) %></p>
+  
+      <div class="actions">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button class="btn alt" type="submit">Selectie opslaan</button>
+        <button class="btn" type="submit" name="action" value="confirm" <%= selectedSeats.length === 0 ? 'disabled' : '' %>>Verder naar bevestigen</button>
+      </div>
+    </div>
+  </form>
+</section>
+<%- include('partials/footer') %>

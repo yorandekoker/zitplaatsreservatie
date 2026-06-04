@@ -1,0 +1,30 @@
+<%- include('../partials/header', { title: 'Klanten', currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1>Klanten</h1>
+  </div>
+
+  <table class="admin-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Naam</th>
+        <th>Email</th>
+        <th>Boekingen</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% klanten.forEach(k => { %>
+      <tr>
+        <td>#<%= k.id %></td>
+        <td><%= k.naam %></td>
+        <td><%= k.email %></td>
+        <td><%= k.aantal_boekingen %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+
+<%- include('../partials/footer') %>

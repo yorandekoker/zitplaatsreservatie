@@ -1,0 +1,23 @@
+<%- include('partials/header', { title: 'Inloggen', currentPath }) %>
+
+<section class="panel narrow" style="max-width: 400px; margin: 2rem auto;">
+  <h1>Inloggen</h1>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <p style="color: var(--brand); font-weight: 600;"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/login" class="admin-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <label>E-mailadres
+      <input type="email" name="email" required placeholder="jan@voorbeeld.be" />
+    </label>
+    <label>Wachtwoord
+      <input type="password" name="password" required />
+    </label>
+    <button type="submit" class="btn">Inloggen</button>
+    <p style="text-align:center; color: var(--muted);">Nog geen account? <a href="/registreer" style="color: var(--brand);">Registreer hier</a></p>
+  </form>
+</section>
+
+<%- include('partials/footer') %>

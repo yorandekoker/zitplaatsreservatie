@@ -1,0 +1,41 @@
+<%- include('../partials/header', { title: 'Boeking detail', currentPath }) %>
+
+<section class="admin-section">
+  <div class="admin-header">
+    <h1>Boeking #<%= boeking.id %></h1>
+    <a href="/admin/boekingen" class="btn btn-small">← Terug</a>
+  </div>
+
+  <article class="admin-card">
+    <h2>Klantgegevens</h2>
+    <p><strong>Naam:</strong> <%= boeking.klant_naam %></p>
+    <p><strong>Email:</strong> <%= boeking.klant_email %></p>
+  </article>
+
+  <article class="admin-card">
+    <h2>Vertoning</h2>
+    <p><strong>Film:</strong> <%= boeking.film_titel %></p>
+    <p><strong>Zaal:</strong> <%= boeking.zaal_naam %></p>
+    <p><strong>Datum:</strong> <%= new Date(boeking.start_tijd).toLocaleString('nl-BE') %></p>
+    <p><strong>Totaalbedrag:</strong> €<%= Number(boeking.totaalbedrag).toFixed(2) %></p>
+  </article>
+
+  <article class="admin-card">
+    <h2>Gereserveerde stoelen</h2>
+    <table class="admin-table">
+      <thead>
+        <tr><th>Rij</th><th>Stoel</th></tr>
+      </thead>
+      <tbody>
+        <% stoelen.forEach(s => { %>
+        <tr>
+          <td>Rij <%= s.rij %></td>
+          <td>Stoel <%= s.stoel %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </article>
+</section>
+
+<%- include('../partials/footer') %>

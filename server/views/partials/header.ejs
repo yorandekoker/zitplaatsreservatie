@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> · Cinegraaf</title>
+    <meta name="csrf-token" content="<%= csrfToken %>" />
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a href="/" class="brand">CINEGRAAF</a>
+
+        <% if (!currentPath.startsWith('/admin')) { %>
+        <nav class="nav">
+          <a href="/movies" class="<%= currentPath === '/movies' ? 'active' : '' %>">Films</a>
+          <% if (currentPath === '/seats' || currentPath === '/confirm' || currentPath === '/payment' || currentPath === '/success') { %>
+            <a href="/seats" class="<%= currentPath === '/seats' ? 'active' : '' %>">Stoelen</a>
+          <% } %>
+          <% if (currentPath === '/confirm' || currentPath === '/payment' || currentPath === '/success') { %>
+            <a href="/confirm" class="<%= currentPath === '/confirm' ? 'active' : '' %>">Bevestigen</a>
+          <% } %>
+          <% if (currentPath === '/payment' || currentPath === '/success') { %>
+            <a href="/payment" class="<%= currentPath === '/payment' ? 'active' : '' %>">Betaling</a>
+          <% } %>
+          <% if (klant) { %>
+            <span style="color: var(--muted); font-size:0.85rem;">👤 <%= klant.naam %></span>
+            <a href="/logout" class="btn btn-small" style="font-size:0.85rem;">Uitloggen</a>
+          <% } else { %>
+            <a href="/login" class="btn btn-small" style="font-size:0.85rem;">Inloggen</a>
+          <% } %>
+        </nav>
+        <% } %>
+
+        <% if (currentPath && currentPath.startsWith('/admin')) { %>
+        <a href="/admin/logout" class="btn btn-small" style="font-size:0.85rem;">Uitloggen</a>
+        <% } %>
+      </header>
+
+      <% if (currentPath && currentPath.startsWith('/admin')) { %>
+      <nav class="admin-topbar">
+        <a href="/admin" class="<%= currentPath === '/admin' ? 'active' : '' %>">📊 Dashboard</a>
+        <a href="/admin/films" class="<%= currentPath.startsWith('/admin/films') ? 'active' : '' %>">🎬 Films</a>
+        <a href="/admin/vertoningen" class="<%= currentPath.startsWith('/admin/vertoningen') ? 'active' : '' %>">📅 Vertoningen</a>
+        <a href="/admin/zalen" class="<%= currentPath.startsWith('/admin/zalen') ? 'active' : '' %>">🏛️ Zalen</a>
+        <a href="/admin/boekingen" class="<%= currentPath.startsWith('/admin/boekingen') ? 'active' : '' %>">🎟️ Boekingen</a>
+        <a href="/admin/klanten" class="<%= currentPath.startsWith('/admin/klanten') ? 'active' : '' %>">👥 Klanten</a>
+      </nav>
+      <% } %>
+
+      <main class="page">

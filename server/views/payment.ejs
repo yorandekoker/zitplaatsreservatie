@@ -1,0 +1,35 @@
+<%- include('partials/header', { title, currentPath }) %>
+<section class="panel centered">
+  <h1>Betaling verwerken</h1>
+  <p>Even geduld, uw reservatie wordt aangemaakt.</p>
+
+  <article class="card narrow-card">
+    <h2><%= reservation.movie.title %></h2>
+    <p class="muted"><%= formattedDate %> · <%= reservation.movie.time %></p>
+    <p class="total">Totaal: €<%= Number(reservation.totalPrice).toFixed(2) %></p>
+  </article>
+
+  <div class="spinner"></div>
+  <p id="paymentStep">Verbinding beveiligen...</p>
+</section>
+<script>
+  const steps = [
+    "Verbinding beveiligen...",
+    "Betaling verwerken...",
+    "Reservatie aanmaken...",
+    "Bijna klaar..."
+  ];
+  const stepEl = document.getElementById("paymentStep");
+  let index = 0;
+
+  const interval = setInterval(() => {
+    index += 1;
+    if (index < steps.length) {
+      stepEl.textContent = steps[index];
+      return;
+    }
+    clearInterval(interval);
+    window.location.href = "/success";
+  }, 900);
+</script>
+<%- include('partials/footer') %>

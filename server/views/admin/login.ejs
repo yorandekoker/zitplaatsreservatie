@@ -1,0 +1,22 @@
+<%- include('../partials/header', { title: 'Admin Login', currentPath }) %>
+
+<section class="panel narrow" style="max-width: 400px; margin: 4rem auto;">
+  <h1>🔐 Admin Login</h1>
+  
+  <% if (typeof error !== 'undefined' && error) { %>
+    <p style="color: var(--brand); font-weight: 600;"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/admin/login" class="admin-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <label>Gebruikersnaam
+      <input type="text" name="username" required />
+    </label>
+    <label>Wachtwoord
+      <input type="password" name="password" required />
+    </label>
+    <button type="submit" class="btn">Inloggen</button>
+  </form>
+</section>
+
+<%- include('../partials/footer') %>

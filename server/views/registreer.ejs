@@ -1,0 +1,26 @@
+<%- include('partials/header', { title: 'Registreren', currentPath }) %>
+
+<section class="panel narrow" style="max-width: 400px; margin: 2rem auto;">
+  <h1>Registreren</h1>
+
+  <% if (typeof error !== 'undefined' && error) { %>
+    <p style="color: var(--brand); font-weight: 600;"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/registreer" class="admin-form">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <label>Naam
+      <input type="text" name="naam" required placeholder="Jan Peeters" />
+    </label>
+    <label>E-mailadres
+      <input type="email" name="email" required placeholder="jan@voorbeeld.be" />
+    </label>
+    <label>Wachtwoord
+      <input type="password" name="password" required minlength="6" />
+    </label>
+    <button type="submit" class="btn">Registreren</button>
+    <p style="text-align:center; color: var(--muted);">Al een account? <a href="/login" style="color: var(--brand);">Log hier in</a></p>
+  </form>
+</section>
+
+<%- include('partials/footer') %>
