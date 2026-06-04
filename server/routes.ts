@@ -11,10 +11,9 @@ const router = express.Router();
 // ==================
 
 function checkCsrf(req: Request, res: Response, next: NextFunction) {
-    console.log("PATH:", req.path);
-  console.log("SESSIE:", (req.session as any).csrfToken);
-  console.log("FORM:", req.body._csrf);
-  if (req.body._csrf !== (req.session as any).csrfToken) {
+  if (!req.body) return next(); // geen body, skip
+  const token = req.body._csrf;
+  if (!token || token !== (req.session as any).csrfToken) {
     return res.status(403).send("Ongeldige CSRF token");
   }
   next();
