@@ -1,11 +1,12 @@
 {
   "version": 2,
-
-  "routes": [
+  "builds": [
     {
-      "src": "/public/styles.css",
-      "dest": "/server/public/styles.css"
-    },
+      "src": "server/app.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
     {
       "src": "/(.*)",
       "dest": "server/app.ts"
