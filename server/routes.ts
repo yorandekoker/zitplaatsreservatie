@@ -1,11 +1,10 @@
 import express, { Request, Response, NextFunction } from "express";
 import pool from "./db/db";
 import QRCode from "qrcode";
-import multer from "multer";
 import bcrypt from "bcrypt";
 
 const router = express.Router();
-const upload = multer({ dest: "server/public/uploads/" });
+
 
 // ==================
 // CSRF CHECK
@@ -402,9 +401,8 @@ router.get("/admin/films/nieuw",  ensureAdmin,async (req: Request, res: Response
   res.render("admin/film-formulier", { title: "Nieuwe film", film: null, actie: "/admin/films/nieuw", titel: null });
 });
 
-router.post("/admin/films/nieuw", upload.single("poster"), checkCsrf,  ensureAdmin,async (req: Request, res: Response) => {
-  const { titel, genre, beschrijving, duur_minuten } = req.body;
-  const poster_url = req.file ? `/public/uploads/${req.file.filename}` : null;
+router.post("/admin/films/nieuw", ensureAdmin, checkCsrf, async (req: Request, res: Response) => {
+  const { titel, genre, beschrijving, duur_minuten, poster_url } = req.body;
   await pool.query(
     "INSERT INTO films (titel, genre, beschrijving, duur_minuten, poster_url) VALUES ($1, $2, $3, $4, $5)",
     [titel, genre, beschrijving, duur_minuten, poster_url],
@@ -417,10 +415,8 @@ router.get("/admin/films/:id/bewerken",  ensureAdmin,  async (req: Request, res:
   res.render("admin/film-formulier", { title: "Film bewerken", film: rows[0], actie: `/admin/films/${req.params.id}/bewerken`, titel: rows[0].titel });
 });
 
-router.post("/admin/films/:id/bewerken", upload.single("poster"), checkCsrf,  ensureAdmin,async (req: Request, res: Response) => {
-  const { titel, genre, beschrijving, duur_minuten } = req.body;
-  const { rows } = await pool.query("SELECT poster_url FROM films WHERE id = $1", [req.params.id]);
-  const poster_url = req.file ? `/public/uploads/${req.file.filename}` : rows[0].poster_url;
+router.post("/admin/films/:id/bewerken", ensureAdmin, checkCsrf, async (req: Request, res: Response) => {
+  const { titel, genre, beschrijving, duur_minuten, poster_url } = req.body;
   await pool.query(
     "UPDATE films SET titel=$1, genre=$2, beschrijving=$3, duur_minuten=$4, poster_url=$5 WHERE id=$6",
     [titel, genre, beschrijving, duur_minuten, poster_url, req.params.id],

@@ -19,9 +19,9 @@
     <label>Duur (minuten)
       <input type="number" name="duur_minuten" value="<%= film ? film.duur_minuten : '' %>" />
     </label>
-    <label>Poster (afbeelding)
-      <input type="file" name="poster" accept="image/*" />
-    </label>
+   <label>Poster URL (link naar afbeelding)
+  <input type="text" name="poster_url" value="<%= film ? film.poster_url : '' %>" placeholder="https://..." />
+</label>
     <% if (film && film.poster_url) { %>
       <img src="<%= film.poster_url %>" alt="Huidige poster" style="max-width:150px; margin-top:8px;" />
     <% } %>
