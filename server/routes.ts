@@ -352,7 +352,7 @@ router.post("/admin/login", checkCsrf, async (req: Request, res: Response) => {
 // Logout
 router.get("/admin/logout", (req: Request, res: Response) => {
   (req.session as any).isAdmin = false;
-  res.redirect("/admin/login");
+  res.redirect("/");
 });
 
 router.get("/admin",  ensureAdmin, async (req: Request, res: Response) => {
