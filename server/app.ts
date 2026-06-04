@@ -12,23 +12,21 @@ import connectPgSimple from "connect-pg-simple";
 
 const PgSession = connectPgSimple(session);
 const app: Application = express();
-app.set("trust proxy", 1);
-const PORT: number = 3000;
-
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
 
 app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use((req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 app.use(cookieParser());
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
 
 app.use(session({
   store: new PgSession({
@@ -41,13 +39,11 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === "production",
-    maxAge: 24 * 60 * 60 * 1000 // 24 uur
-  }
+    sameSite: "lax",
+    maxAge: 24 * 60 * 60 * 1000,
+  },
 }));
 
-
-// Eigen CSRF implementatie
-// CSRF - sla /api routes over
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.locals.currentPath = req.path;
   res.locals.klant = (req.session as any).klant || null;
@@ -67,6 +63,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use("/", routes);
 
-app.listen(PORT, (): void => {
-  console.log(`Server draait op http://localhost:${PORT}`);
+app.listen(3000, (): void => {
+  console.log("Server draait op http://localhost:3000");
 });
