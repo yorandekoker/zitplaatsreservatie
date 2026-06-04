@@ -32,7 +32,7 @@
       <h2><%= movie.titel %></h2>
       <p><%= movie.beschrijving %></p>
       <div class="movie-meta">
-        <span><%= new Date(movie.start_tijd).toLocaleString('nl-BE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) %></span>
+        <span><%= new Date(movie.start_tijd).toLocaleString('nl-BE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Brussels' }) %></span>
         <span><strong>€<%= Number(movie.prijs).toFixed(2) %></strong></span>
       </div>
     </div>

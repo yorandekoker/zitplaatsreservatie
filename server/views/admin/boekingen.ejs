@@ -22,7 +22,7 @@
         <td>#<%= b.id %></td>
         <td><%= b.klant_naam %></td>
         <td><%= b.film_titel %></td>
-        <td><%= new Date(b.geboekt_op).toLocaleString('nl-BE') %></td>
+        <td><%= new Date(b.geboekt_op).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels' }) %></td>
         <td>€<%= Number(b.totaalbedrag).toFixed(2) %></td>
         <td><a href="/admin/boekingen/<%= b.id %>" class="btn btn-small">Bekijken</a></td>
       </tr>

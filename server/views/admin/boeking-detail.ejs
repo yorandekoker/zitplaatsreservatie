@@ -16,7 +16,7 @@
     <h2>Vertoning</h2>
     <p><strong>Film:</strong> <%= boeking.film_titel %></p>
     <p><strong>Zaal:</strong> <%= boeking.zaal_naam %></p>
-    <p><strong>Datum:</strong> <%= new Date(boeking.start_tijd).toLocaleString('nl-BE') %></p>
+    <p><strong>Datum:</strong> <%= new Date(boeking.start_tijd).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels' }) %></p>
     <p><strong>Totaalbedrag:</strong> €<%= Number(boeking.totaalbedrag).toFixed(2) %></p>
   </article>
 

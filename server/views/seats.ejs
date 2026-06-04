@@ -1,7 +1,7 @@
 <%- include('partials/header', { title, currentPath }) %>
 <section class="panel">
   <h1>Reserveer uw zitplek</h1>
-  <p><strong><%= movie.title %></strong> · <%= movie.time %></p>
+  <p><strong><%= movie.titel %></strong> · <%= new Date(movie.start_tijd).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) %> <%= movie.zaal_naam %></p>
 
   <form method="post" action="/seats">
     <div class="seat-map">

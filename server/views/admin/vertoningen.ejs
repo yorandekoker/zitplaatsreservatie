@@ -21,7 +21,7 @@
       <tr>
         <td><%= v.film_titel %></td>
         <td><%= v.zaal_naam %></td>
-        <td><%= new Date(v.start_tijd).toLocaleString('nl-BE') %></td>
+        <td><%= new Date(v.start_tijd).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels' }) %></td>
         <td>€<%= Number(v.prijs).toFixed(2) %></td>
         <td>
           <form method="POST" action="/admin/vertoningen/<%= v.id %>/verwijderen" style="display:inline">

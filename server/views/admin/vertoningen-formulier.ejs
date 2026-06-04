@@ -6,6 +6,10 @@
     <a href="/admin/vertoningen" class="btn btn-small">← Terug</a>
   </div>
 
+  <% if (typeof error !== 'undefined' && error) { %>
+    <p style="color: var(--brand); font-weight: 600;">⚠️ <%= error %></p>
+  <% } %>
+
   <form method="POST" action="/admin/vertoningen/nieuw" class="admin-form">
     <label>Film
       <select name="film_id" required>
