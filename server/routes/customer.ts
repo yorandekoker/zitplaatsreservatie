@@ -23,9 +23,6 @@ router.get("/login", (req: Request, res: Response) => {
 
 router.post("/login", checkCsrf, async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  console.log("EMAIL:", email);
-  console.log("ADMIN_USERNAME:", process.env.ADMIN_USERNAME);
-  console.log("MATCH:", email === process.env.ADMIN_USERNAME);
 
   if (
     email === process.env.ADMIN_USERNAME &&

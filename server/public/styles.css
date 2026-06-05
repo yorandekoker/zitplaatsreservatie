@@ -170,7 +170,16 @@ a {
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
+.extra-datum {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  margin-top: 0.5rem;
+}
 
+.extra-datum label {
+  flex: 1;
+}
 .filters {
   display: flex;
   flex-wrap: wrap;

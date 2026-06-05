@@ -113,46 +113,63 @@ router.get("/admin/vertoningen/nieuw", ensureAdmin, async (req: Request, res: Re
 });
 
 router.post("/admin/vertoningen/nieuw", ensureAdmin, checkCsrf, async (req: Request, res: Response) => {
-  const { film_id, zaal_id, start_tijd, prijs } = req.body;
+  const { film_id, zaal_id, prijs } = req.body;
+
+  // start_tijd kan een string zijn (1 datum) of array (meerdere datums)
+  let datums: string[] = Array.isArray(req.body.start_tijd)
+    ? req.body.start_tijd
+    : [req.body.start_tijd];
+
+  // Filter lege datums eruit
+  datums = datums.filter((d) => d && d.trim() !== "");
 
   try {
-    // Haal duur van de film op
     const { rows: filmRows } = await pool.query(
       "SELECT duur_minuten FROM films WHERE id = $1",
       [film_id]
     );
     const duur = filmRows[0].duur_minuten || 120;
 
-    // Check overlap: kijk of er al een vertoning is in deze zaal die overlapt
-    const { rows: overlap } = await pool.query(`
-      SELECT v.id, f.titel, v.start_tijd, f.duur_minuten
-      FROM vertoningen v
-      JOIN films f ON f.id = v.film_id
-      WHERE v.zaal_id = $1
-      AND (
-        -- Nieuwe vertoning start tijdens bestaande vertoning
-        ($2 >= v.start_tijd AND $2 < v.start_tijd + (f.duur_minuten || ' minutes')::interval)
-        OR
-        -- Bestaande vertoning start tijdens nieuwe vertoning
-        (v.start_tijd >= $2 AND v.start_tijd < $2::timestamptz + ($3 || ' minutes')::interval)
-      )
-    `, [zaal_id, start_tijd, duur]);
+    const conflicten: string[] = [];
 
-    if (overlap.length > 0) {
+    // Check elke datum op overlap
+    for (const datum of datums) {
+      const { rows: overlap } = await pool.query(`
+        SELECT v.id, f.titel, v.start_tijd
+        FROM vertoningen v
+        JOIN films f ON f.id = v.film_id
+        WHERE v.zaal_id = $1
+        AND (
+          ($2 >= v.start_tijd AND $2 < v.start_tijd + (f.duur_minuten || ' minutes')::interval)
+          OR
+          (v.start_tijd >= $2 AND v.start_tijd < $2::timestamptz + ($3 || ' minutes')::interval)
+        )
+      `, [zaal_id, datum, duur]);
+
+      if (overlap.length > 0) {
+        conflicten.push(new Date(datum).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels' }));
+      }
+    }
+
+    if (conflicten.length > 0) {
       const { rows: films } = await pool.query("SELECT * FROM films ORDER BY titel");
       const { rows: zalen } = await pool.query("SELECT * FROM zalen ORDER BY naam");
       return res.render("admin/vertoningen-formulier", {
         title: "Nieuwe vertoning",
         films,
         zalen,
-        error: `⚠️ Overlap met "${overlap[0].titel}" die speelt om ${new Date(overlap[0].start_tijd).toLocaleString('nl-BE', { timeZone: 'Europe/Brussels' })}`
+        error: `Overlap gevonden op: ${conflicten.join(", ")}. Geen enkele vertoning toegevoegd.`
       });
     }
 
-    await pool.query(
-      "INSERT INTO vertoningen (film_id, zaal_id, start_tijd, prijs) VALUES ($1, $2, $3, $4)",
-      [film_id, zaal_id, start_tijd, prijs],
-    );
+    // Geen conflicten → voeg alle datums toe
+    for (const datum of datums) {
+      await pool.query(
+        "INSERT INTO vertoningen (film_id, zaal_id, start_tijd, prijs) VALUES ($1, $2, $3, $4)",
+        [film_id, zaal_id, datum, prijs]
+      );
+    }
+
     res.redirect("/admin/vertoningen");
 
   } catch (err: any) {

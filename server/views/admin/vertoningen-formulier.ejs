@@ -25,15 +25,40 @@
         <% }) %>
       </select>
     </label>
-    <label>Datum & tijd
-      <input type="datetime-local" name="start_tijd" required />
-    </label>
     <label>Prijs (€)
       <input type="number" name="prijs" step="0.01" min="0" required />
     </label>
+
+    <div id="datums">
+      <label>Datum & tijd
+        <input type="datetime-local" name="start_tijd" required />
+      </label>
+    </div>
+
+    <button type="button" class="btn alt btn-small" id="datumToevoegen">+ Extra datum toevoegen</button>
+
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <button type="submit" class="btn btn-primary">Opslaan</button>
   </form>
 </section>
+
+<script>
+  document.getElementById('datumToevoegen').addEventListener('click', function() {
+    const container = document.getElementById('datums');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'extra-datum';
+    wrapper.innerHTML = `
+      <label>Extra datum & tijd
+        <input type="datetime-local" name="start_tijd" />
+      </label>
+      <button type="button" class="btn btn-small btn-danger verwijder-datum">Verwijderen</button>
+    `;
+    container.appendChild(wrapper);
+
+    wrapper.querySelector('.verwijder-datum').addEventListener('click', function() {
+      wrapper.remove();
+    });
+  });
+</script>
 
 <%- include('../partials/footer') %>
