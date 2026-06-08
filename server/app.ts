@@ -33,6 +33,7 @@ app.use(session({
     conString: process.env.DATABASE_URL,
     tableName: "sessies",
     createTableIfMissing: true,
+    pruneSessionInterval: 60 * 60, // verwijder verlopen sessies elke 60 minuten
   }),
   secret: process.env.SESSION_SECRET || "cinegraaf-dev-secret",
   resave: false,
